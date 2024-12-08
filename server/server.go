@@ -81,7 +81,7 @@ func (s *Server) Stop() error {
 	return s.server.Shutdown(s.ctx)
 }
 
-func (s *Server) Setup(router Router) {
+func (s *Server) Setup(router *Router) {
 	s.server.Handler = router.router
 }
 
