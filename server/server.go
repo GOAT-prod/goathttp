@@ -48,6 +48,10 @@ func NewRouter() Router {
 	}
 }
 
+func (r *Router) Mux() *mux.Router {
+	return r.router
+}
+
 func (r *Router) Get(path string, handler Handler) {
 	r.router.HandleFunc(path, handler).Methods(http.MethodGet)
 }
