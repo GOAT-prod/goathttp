@@ -48,6 +48,22 @@ func NewRouter() Router {
 	}
 }
 
+func (r *Router) Get(path string, handler Handler) {
+	r.router.HandleFunc(path, handler).Methods(http.MethodGet)
+}
+
+func (r *Router) Post(path string, handler Handler) {
+	r.router.HandleFunc(path, handler).Methods(http.MethodPost)
+}
+
+func (r *Router) Put(path string, handler Handler) {
+	r.router.HandleFunc(path, handler).Methods(http.MethodPut)
+}
+
+func (r *Router) Delete(path string, handler Handler) {
+	r.router.HandleFunc(path, handler).Methods(http.MethodDelete)
+}
+
 func (r *Router) NewSubRouter(pathPrefix string, handlers []HandlerDefinition, middlewares []mux.MiddlewareFunc) {
 	s := r.router.PathPrefix(pathPrefix).Subrouter()
 	s.Use(middlewares...)
