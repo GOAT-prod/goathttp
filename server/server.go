@@ -48,10 +48,6 @@ func NewRouter() Router {
 	}
 }
 
-func (r *Router) Mux() *mux.Router {
-	return r.router
-}
-
 func (r *Router) Get(path string, handler Handler) {
 	r.router.HandleFunc(path, handler).Methods(http.MethodGet)
 }
@@ -85,8 +81,8 @@ func (s *Server) Stop() error {
 	return s.server.Shutdown(s.ctx)
 }
 
-func (s *Server) Setup(router *mux.Router) {
-	s.server.Handler = router
+func (s *Server) Setup(router Router) {
+	s.server.Handler = router.router
 }
 
 func (r *Router) SetMiddlewares(middleware ...mux.MiddlewareFunc) {
