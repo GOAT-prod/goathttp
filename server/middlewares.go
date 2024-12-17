@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -61,10 +62,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		if len(token) == 0 {
 			w.WriteHeader(http.StatusUnauthorized)
+			log.Println("empty token")
 			return
 		}
 
 		if err := validateToken(token); err != nil {
+			log.Println(err)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -77,7 +80,7 @@ func validateToken(token string) error {
 	splitToken := strings.Split(token, " ")
 
 	if len(splitToken) != 2 || splitToken[0] != "Bearer" {
-		return errors.New("invalid token")
+		return errors.New("нет Bearer или токена")
 	}
 
 	jwtToken, err := jwt.Parse(splitToken[1], func(token *jwt.Token) (interface{}, error) {
@@ -94,16 +97,16 @@ func validateToken(token string) error {
 
 	tokenClaims, ok := jwtToken.Claims.(jwt.MapClaims)
 	if !ok || !jwtToken.Valid {
-		return errors.New("invalid token")
+		return errors.New("клаймсы дерьма")
 	}
 
 	exp, ok := tokenClaims["exp"].(float64)
 	if !ok {
-		return errors.New("invalid token")
+		return errors.New("а де экспайрес")
 	}
 
 	if time.Now().Unix() > int64(exp) {
-		return errors.New("token expired")
+		return errors.New("сдох")
 	}
 
 	return nil
