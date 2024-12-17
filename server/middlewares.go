@@ -36,8 +36,11 @@ func PanicRecoveryMiddleware(logger goatlogger.Logger) func(http.Handler) http.H
 
 func CORSMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add(headers.AccessControlAllowOriginHeader(), headers.AllowedOrigins())
-		w.Header().Add(headers.AccessControlAllowMethodsHeader(), headers.AllowedMethods())
+		if (*r).Method == http.MethodOptions {
+			w.Header().Add(headers.AccessControlAllowOriginHeader(), headers.AllowedOrigins())
+			w.Header().Add(headers.AccessControlAllowMethodsHeader(), headers.AllowedMethods())
+			return
+		}
 
 		next.ServeHTTP(w, r)
 	})
